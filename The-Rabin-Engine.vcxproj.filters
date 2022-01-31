@@ -328,13 +328,7 @@
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Patrol.h">
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Student\Project_1\Leaf\L_SeekTarget.h">
-      <Filter>Source\Student\Project_1\Leaf</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Student\Project_1\Decorator\D_IfInRange.h">
-      <Filter>Source\Student\Project_1\Decorator</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Student\Project_1\Decorator\D_RepeatDoing.h">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClInclude>
   </ItemGroup>
@@ -567,13 +561,7 @@
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Patrol.cpp">
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Student\Project_1\Leaf\L_SeekTarget.cpp">
-      <Filter>Source\Student\Project_1\Leaf</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Student\Project_1\Decorator\D_IfInRange.cpp">
-      <Filter>Source\Student\Project_1\Decorator</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Student\Project_1\Decorator\D_RepeatDoing.cpp">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClCompile>
   </ItemGroup>

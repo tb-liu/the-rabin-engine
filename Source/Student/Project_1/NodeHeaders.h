@@ -17,7 +17,7 @@
 #include "Decorator/D_RepeatFourTimes.h"
 
 // Student Decorator Nodes
-#include "Decorator/D_RepeatDoing.h"
+
 #include "Decorator/D_IfInRange.h"
 
 
@@ -33,4 +33,3 @@
 #include "Leaf/L_Engage.h"
 #include "Leaf/L_IfActive.h"
 #include "Leaf/L_Patrol.h"
-#include "Leaf/L_SeekTarget.h"

@@ -4,7 +4,7 @@
 
 void L_Patrol::on_enter()
 {
-    if (RNG::coin_toss)
+    if (RNG::coin_toss())
     {
         // move to center
         targetPoint = Vec3(50,0,50);
@@ -13,6 +13,8 @@ void L_Patrol::on_enter()
     {
         targetPoint = RNG::world_position();
     }
+
+    BehaviorNode::on_leaf_enter();
 }
 
 void L_Patrol::on_update(float dt)
