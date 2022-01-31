@@ -90,6 +90,11 @@ float Agent::get_movement_speed() const
     return movementSpeed;
 }
 
+bool Agent::get_active_status() const
+{
+    return isActive;
+}
+
 const Mat4 &Agent::get_local_to_world()
 {
     if (isDirty == true)
@@ -148,6 +153,10 @@ void Agent::set_color(const Vec3 &newColor)
 void Agent::set_movement_speed(float speed)
 {
     movementSpeed = speed;
+}
+void Agent::set_active_status(bool state)
+{
+    isActive = state;
 }
 #pragma endregion
 

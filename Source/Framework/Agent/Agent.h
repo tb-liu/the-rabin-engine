@@ -44,6 +44,8 @@ public:
     const size_t &get_id() const;
 
     float get_movement_speed() const;
+
+    bool get_active_status() const;
 #pragma endregion
 
 #pragma region Setters
@@ -58,6 +60,8 @@ public:
     void set_color(const Vec3 &newColor);
     
     void set_movement_speed(float speed);
+
+    void set_active_status(bool state);
 #pragma endregion
 
     virtual void update(float dt);
@@ -69,7 +73,7 @@ private:
 
     Mat4 localToWorld;
     bool isDirty;
-
+    bool isActive;
     Vec3 color;
     
     const char *type;
