@@ -32,5 +32,5 @@
 #*.app
 
 # Visual Studio Local Temp Files
-.vs/
-.x64/
+**/.vs
+**/x64
