@@ -331,6 +331,27 @@
     <ClInclude Include="Source\Student\Project_1\Decorator\D_IfInRange.h">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_Flee.h">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_MoveToPolice.h">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_Report.h">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Decorator\D_PoliceInRange.h">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Decorator\D_KeepDoingForAPeriodOfTime.h">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Decorator\D_IfEnemieNear.h">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Decorator\D_KeepTryingUntilFourTimesOrSuccess.h">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Framework\Main.cpp">
@@ -562,6 +583,27 @@
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClCompile>
     <ClCompile Include="Source\Student\Project_1\Decorator\D_IfInRange.cpp">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_Flee.cpp">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_MoveToPolice.cpp">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_Report.cpp">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Decorator\D_PoliceInRange.cpp">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Decorator\D_KeepDoingForAPeriodOfTime.cpp">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Decorator\D_IfEnemieNear.cpp">
+      <Filter>Source\Student\Project_1\Decorator</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Decorator\D_KeepTryingUntilFourTimesOrSuccess.cpp">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClCompile>
   </ItemGroup>

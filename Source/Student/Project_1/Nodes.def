@@ -6,17 +6,22 @@ REGISTER_CONTROLFLOW(C_Sequencer, "C_Sequencer")
 REGISTER_DECORATOR(D_Delay, "D_Delay")
 REGISTER_DECORATOR(D_InvertedRepeater, "D_InvertedRepeater")
 REGISTER_DECORATOR(D_RepeatFourTimes, "D_RepeatFourTimes")
-
+REGISTER_DECORATOR(D_PoliceInRange, "D_PoliceInRange")
 REGISTER_DECORATOR(D_IfInRange, "D_IfInRange")
+REGISTER_DECORATOR(D_KeepDoingForAPeriodOfTime, "D_KeepDoingForAPeriodOfTime")
+REGISTER_DECORATOR(D_KeepTryingUntilFourTimesOrSuccess, "D_KeepTryingUntilFourTimesOrSuccess")
+//REGISTER_DECORATOR(D_IfEnemieNear, "D_IfEnemieNear")
 
+REGISTER_LEAF(L_Report, "L_Report")
+REGISTER_LEAF(L_Flee, "L_Flee")
+REGISTER_LEAF(L_MoveToPolice, "L_MoveToPolice")
 REGISTER_LEAF(L_IfActive, "L_IfActive")
 REGISTER_LEAF(L_Patrol, "Patrol")
 REGISTER_LEAF(L_Idle, "Idle")
-
 REGISTER_LEAF(L_Engage, "Engage")
-
-
 REGISTER_LEAF(L_Capture, "Capture")
+//REGISTER_LEAF(L_Alarm, "Alarm")
+
 
 
 REGISTER_LEAF(L_CheckMouseClick, "L_CheckMouseClick")

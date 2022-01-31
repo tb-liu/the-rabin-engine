@@ -17,9 +17,11 @@
 #include "Decorator/D_RepeatFourTimes.h"
 
 // Student Decorator Nodes
-
 #include "Decorator/D_IfInRange.h"
-
+#include "Decorator/D_PoliceInRange.h"
+#include "Decorator/D_IfEnemieNear.h"
+#include "Decorator/D_KeepDoingForAPeriodOfTime.h"
+#include "Decorator/D_KeepTryingUntilFourTimesOrSuccess.h"
 
 // Example Leaf Nodes
 #include "Leaf/L_CheckMouseClick.h"
@@ -28,8 +30,13 @@
 #include "Leaf/L_MoveToMouseClick.h"
 #include "Leaf/L_MoveToRandomPosition.h"
 
+
 // Student Leaf Nodes
 #include "Leaf/L_Capture.h"
 #include "Leaf/L_Engage.h"
 #include "Leaf/L_IfActive.h"
 #include "Leaf/L_Patrol.h"
+#include "Leaf/L_Alarm.h"
+#include "Leaf/L_Flee.h"
+#include "Leaf/L_MoveToPolice.h"
+#include "Leaf/L_Report.h"
