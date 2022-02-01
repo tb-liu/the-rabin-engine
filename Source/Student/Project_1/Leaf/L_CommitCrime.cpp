@@ -1,8 +1,8 @@
 #include <pch.h>
-#include "L_Capture.h"
+#include "L_CommitCrime.h"
 #include "Agent/BehaviorAgent.h"
 
-void L_Capture::on_enter()
+void L_CommitCrime::on_enter()
 {
     
     // find the agent that is the furthest from this one
@@ -12,7 +12,7 @@ void L_Capture::on_enter()
     
     Vec3 currPos = agent->get_position();
 
-    const auto& allAgents = agents->get_all_agents_by_type("Criminal");
+    const auto& allAgents = agents->get_all_agents_by_type("Civilian");
     if (allAgents.size() == 0)
     {
         on_failure();
@@ -34,18 +34,22 @@ void L_Capture::on_enter()
 	BehaviorNode::on_leaf_enter();
 }
 
-void L_Capture::on_update(float dt)
+void L_CommitCrime::on_update(float dt)
 {
     if (!target)
     {
         on_failure();
     }
-    else
+    else if(Vec3::Distance(agent->get_position(), target->get_position()) <= 10.f)
     {
+        
         agents->destroy_agent(target);
         agent->set_active_status(false);
         on_success();
     }
-    
+    else 
+    {
+        on_failure();
+    }
     display_leaf_text();
 }

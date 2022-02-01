@@ -4,46 +4,59 @@
 
 void L_Alarm::on_enter()
 {
-    
+    targets.clear();
     // find the agent that is the furthest from this one
-    float shortestDistance = std::numeric_limits<float>().max();
-    Vec3 furthestPoint;
-    target = NULL;
+    float alarmRange = 15.f;
+
+
     
     Vec3 currPos = agent->get_position();
 
-    const auto& allAgents = agents->get_all_agents_by_type("Enemie");
-    if (allAgents.size() == 0)
+    const auto& allPolice = agents->get_all_agents_by_type("Police");
+    const auto& allCivilian = agents->get_all_agents_by_type("Civilian");
+
+    if (allPolice.size() == 0 && allCivilian.size() == 0)
     {
         on_failure();
     }
-    for (const auto& a : allAgents)
+    for (const auto& a : allPolice)
     {
         const auto& agentPos = a->get_position();
         const float distance = Vec3::Distance(currPos, agentPos);
 
-        if (distance < shortestDistance)
+        if (distance < alarmRange)
         {
-            shortestDistance = distance;
-            target = a;
+            targets.push_back(a);
         }
         
     }
-    
+    for (const auto& a : allCivilian)
+    {
+        const auto& agentPos = a->get_position();
+        const float distance = Vec3::Distance(currPos, agentPos);
+
+        if (distance < alarmRange)
+        {
+            targets.push_back(a);
+        }
+
+    }
 
 	BehaviorNode::on_leaf_enter();
 }
 
 void L_Alarm::on_update(float dt)
 {
-    if (!target)
+    if (targets.size() == 0)
     {
         on_failure();
     }
     else
     {
-        agents->destroy_agent(target);
-        agent->set_active_status(false);
+        for (const auto & a : targets)
+        {
+            a->set_active_status(true);
+        }
         on_success();
     }
     

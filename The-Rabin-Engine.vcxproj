@@ -259,8 +259,10 @@
     <ClInclude Include="Source\Student\Project_1\Decorator\D_KeepTryingUntilFourTimesOrSuccess.h" />
     <ClInclude Include="Source\Student\Project_1\Decorator\D_PoliceInRange.h" />
     <ClInclude Include="Source\Student\Project_1\Decorator\D_RepeatFourTimes.h" />
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_Alarm.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Capture.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_CheckMouseClick.h" />
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_CommitCrime.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Engage.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Flee.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Idle.h" />
@@ -271,6 +273,7 @@
     <ClInclude Include="Source\Student\Project_1\Leaf\L_MoveToRandomPosition.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Patrol.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Report.h" />
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_SetActive.h" />
     <ClInclude Include="Source\Student\Project_1\NodeHeaders.h" />
     <ClInclude Include="Source\Student\Project_2\P2_Pathfinding.h" />
   </ItemGroup>
@@ -349,8 +352,10 @@
     <ClCompile Include="Source\Student\Project_1\Decorator\D_KeepTryingUntilFourTimesOrSuccess.cpp" />
     <ClCompile Include="Source\Student\Project_1\Decorator\D_PoliceInRange.cpp" />
     <ClCompile Include="Source\Student\Project_1\Decorator\D_RepeatFourTimes.cpp" />
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_Alarm.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Capture.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_CheckMouseClick.cpp" />
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_CommitCrime.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Engage.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Flee.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Idle.cpp" />
@@ -361,6 +366,7 @@
     <ClCompile Include="Source\Student\Project_1\Leaf\L_MoveToRandomPosition.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Patrol.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Report.cpp" />
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_SetActive.cpp" />
     <ClCompile Include="Source\Student\Project_1\Setup.cpp" />
     <ClCompile Include="Source\Student\Project_2\P2_Pathfinding.cpp" />
     <ClCompile Include="Source\Student\Project_3\P3_TerrainAnalysis.cpp" />

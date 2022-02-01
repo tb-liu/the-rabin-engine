@@ -23,6 +23,7 @@
 #include "Decorator/D_KeepDoingForAPeriodOfTime.h"
 #include "Decorator/D_KeepTryingUntilFourTimesOrSuccess.h"
 
+
 // Example Leaf Nodes
 #include "Leaf/L_CheckMouseClick.h"
 #include "Leaf/L_Idle.h"
@@ -40,3 +41,6 @@
 #include "Leaf/L_Flee.h"
 #include "Leaf/L_MoveToPolice.h"
 #include "Leaf/L_Report.h"
+#include "Leaf/L_Alarm.h"
+#include "Leaf/L_CommitCrime.h"
+#include "Leaf/L_SetActive.h"
