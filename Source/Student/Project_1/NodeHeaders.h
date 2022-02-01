@@ -19,7 +19,6 @@
 // Student Decorator Nodes
 #include "Decorator/D_IfInRange.h"
 #include "Decorator/D_PoliceInRange.h"
-#include "Decorator/D_IfEnemieNear.h"
 #include "Decorator/D_KeepDoingForAPeriodOfTime.h"
 #include "Decorator/D_KeepTryingUntilFourTimesOrSuccess.h"
 
@@ -44,3 +43,6 @@
 #include "Leaf/L_Alarm.h"
 #include "Leaf/L_CommitCrime.h"
 #include "Leaf/L_SetActive.h"
+#include "Leaf/L_Exam.h"
+#include "Leaf/L_ChooseRandomTarget.h"
+#include "Leaf/L_CoolDown.h"

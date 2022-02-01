@@ -14,10 +14,22 @@ void L_Alarm::on_enter()
 
     const auto& allPolice = agents->get_all_agents_by_type("Police");
     const auto& allCivilian = agents->get_all_agents_by_type("Civilian");
-
-    if (/*allPolice.size() == 0 &&*/ allCivilian.size() == 0)
+    const auto& allDetective = agents->get_all_agents_by_type("Detective");
+    if (allPolice.size() == 0 && allCivilian.size() == 0 && allDetective.size() == 0)
     {
         on_failure();
+        return;
+    }
+    for (const auto& a : allDetective)
+    {
+        const auto& agentPos = a->get_position();
+        const float distance = Vec3::Distance(currPos, agentPos);
+
+        if (distance < alarmRange * 1.5f)
+        {
+            targets.push_back(a);
+        }
+
     }
     for (const auto& a : allPolice)
     {
@@ -35,7 +47,7 @@ void L_Alarm::on_enter()
         const auto& agentPos = a->get_position();
         const float distance = Vec3::Distance(currPos, agentPos);
 
-        if (distance < alarmRange)
+        if (distance < 0.8f * alarmRange)
         {
             targets.push_back(a);
         }

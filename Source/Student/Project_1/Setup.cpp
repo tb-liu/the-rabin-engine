@@ -21,7 +21,10 @@ void ProjectOne::setup()
         police->set_color(Vec3(0.094, 0.592, 0.749));
         police->set_position(RNG::world_position());
     }
-    
+
+    BehaviorAgent* detective = agents->create_behavior_agent("Detective", BehaviorTreeTypes::Detective);
+    detective->set_color(Vec3(0.250, 0.776, 0.141));
+    detective->set_position(RNG::world_position());
     
     for (int i = 0; i < RNG::range(5,7); i++)
     {

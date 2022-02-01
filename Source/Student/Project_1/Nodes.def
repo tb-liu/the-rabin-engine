@@ -10,8 +10,7 @@ REGISTER_DECORATOR(D_PoliceInRange, "D_PoliceInRange")
 REGISTER_DECORATOR(D_IfInRange, "D_IfInRange")
 REGISTER_DECORATOR(D_KeepDoingForAPeriodOfTime, "D_KeepDoingForAPeriodOfTime")
 REGISTER_DECORATOR(D_KeepTryingUntilFourTimesOrSuccess, "D_KeepTryingUntilFourTimesOrSuccess")
-//REGISTER_DECORATOR(D_NegateResult, "D_NegateResult")
-//REGISTER_DECORATOR(D_IfEnemieNear, "D_IfEnemieNear")
+
 
 REGISTER_LEAF(L_Report, "L_Report")
 REGISTER_LEAF(L_Flee, "L_Flee")
@@ -24,8 +23,9 @@ REGISTER_LEAF(L_Capture, "Capture")
 REGISTER_LEAF(L_CommitCrime, "L_CommitCrime")
 REGISTER_LEAF(L_Alarm, "Alarm")
 REGISTER_LEAF(L_SetActive, "L_SetActive")
-
-
+REGISTER_LEAF(L_Exam, "Exam")
+REGISTER_LEAF(L_CoolDown, "CoolDown")
+REGISTER_LEAF(L_ChooseRandomTarget, "L_ChooseRandomTarget")
 
 REGISTER_LEAF(L_CheckMouseClick, "L_CheckMouseClick")
 REGISTER_LEAF(L_MoveToFurthestAgent, "L_MoveToFurthestAgent")

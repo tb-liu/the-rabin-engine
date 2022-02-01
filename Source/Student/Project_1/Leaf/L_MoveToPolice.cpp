@@ -27,7 +27,9 @@ void L_MoveToPolice::on_enter()
 
     if (validTargets.size() == 0)
     {
+
         on_failure();
+        return;
     }
     // set animation, speed, etc
     this->agent->get_behavior_tree().get_tree_name();

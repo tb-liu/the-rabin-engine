@@ -346,9 +346,6 @@
     <ClInclude Include="Source\Student\Project_1\Decorator\D_KeepDoingForAPeriodOfTime.h">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Student\Project_1\Decorator\D_IfEnemieNear.h">
-      <Filter>Source\Student\Project_1\Decorator</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Student\Project_1\Decorator\D_KeepTryingUntilFourTimesOrSuccess.h">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClInclude>
@@ -359,6 +356,15 @@
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClInclude>
     <ClInclude Include="Source\Student\Project_1\Leaf\L_SetActive.h">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_ChooseRandomTarget.h">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_CoolDown.h">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Student\Project_1\Leaf\L_Exam.h">
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClInclude>
   </ItemGroup>
@@ -609,9 +615,6 @@
     <ClCompile Include="Source\Student\Project_1\Decorator\D_KeepDoingForAPeriodOfTime.cpp">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Student\Project_1\Decorator\D_IfEnemieNear.cpp">
-      <Filter>Source\Student\Project_1\Decorator</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Student\Project_1\Decorator\D_KeepTryingUntilFourTimesOrSuccess.cpp">
       <Filter>Source\Student\Project_1\Decorator</Filter>
     </ClCompile>
@@ -622,6 +625,15 @@
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClCompile>
     <ClCompile Include="Source\Student\Project_1\Leaf\L_SetActive.cpp">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_ChooseRandomTarget.cpp">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_CoolDown.cpp">
+      <Filter>Source\Student\Project_1\Leaf</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Student\Project_1\Leaf\L_Exam.cpp">
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClCompile>
   </ItemGroup>
