@@ -24,7 +24,6 @@ REGISTER_LEAF(L_CommitCrime, "L_CommitCrime")
 REGISTER_LEAF(L_Alarm, "Alarm")
 REGISTER_LEAF(L_SetActive, "L_SetActive")
 REGISTER_LEAF(L_Exam, "Exam")
-REGISTER_LEAF(L_CoolDown, "CoolDown")
 REGISTER_LEAF(L_ChooseRandomTarget, "L_ChooseRandomTarget")
 
 REGISTER_LEAF(L_CheckMouseClick, "L_CheckMouseClick")

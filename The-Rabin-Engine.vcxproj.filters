@@ -361,9 +361,6 @@
     <ClInclude Include="Source\Student\Project_1\Leaf\L_ChooseRandomTarget.h">
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Student\Project_1\Leaf\L_CoolDown.h">
-      <Filter>Source\Student\Project_1\Leaf</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Exam.h">
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClInclude>
@@ -628,9 +625,6 @@
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClCompile>
     <ClCompile Include="Source\Student\Project_1\Leaf\L_ChooseRandomTarget.cpp">
-      <Filter>Source\Student\Project_1\Leaf</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Student\Project_1\Leaf\L_CoolDown.cpp">
       <Filter>Source\Student\Project_1\Leaf</Filter>
     </ClCompile>
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Exam.cpp">

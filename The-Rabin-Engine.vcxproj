@@ -263,7 +263,6 @@
     <ClInclude Include="Source\Student\Project_1\Leaf\L_CheckMouseClick.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_ChooseRandomTarget.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_CommitCrime.h" />
-    <ClInclude Include="Source\Student\Project_1\Leaf\L_CoolDown.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Engage.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Exam.h" />
     <ClInclude Include="Source\Student\Project_1\Leaf\L_Flee.h" />
@@ -358,7 +357,6 @@
     <ClCompile Include="Source\Student\Project_1\Leaf\L_CheckMouseClick.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_ChooseRandomTarget.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_CommitCrime.cpp" />
-    <ClCompile Include="Source\Student\Project_1\Leaf\L_CoolDown.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Engage.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Exam.cpp" />
     <ClCompile Include="Source\Student\Project_1\Leaf\L_Flee.cpp" />

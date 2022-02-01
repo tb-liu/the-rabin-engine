@@ -2,11 +2,13 @@
 #include "D_KeepDoingForAPeriodOfTime.h"
 
 D_KeepDoingForAPeriodOfTime::D_KeepDoingForAPeriodOfTime():counter(0)
-{}
+{
+    counter = RNG::range(15.f, 30.f);
+}
 
 void D_KeepDoingForAPeriodOfTime::on_enter()
 {
-    counter = RNG::range(15.f,30.f);
+    
     BehaviorNode::on_enter();
 }
 
@@ -20,6 +22,8 @@ void D_KeepDoingForAPeriodOfTime::on_update(float dt)
     if (counter <= 0)
     {
         on_success();
+        child->set_status(NodeStatus::EXITING);
+
         return;
     }
     

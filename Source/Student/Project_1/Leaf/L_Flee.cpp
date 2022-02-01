@@ -24,10 +24,10 @@ void L_Flee::on_update(float dt)
     }
 
     display_leaf_text();
-    
-}
-
-void L_Flee::on_exit()
-{
     agent->set_movement_speed(originSpeed);
 }
+
+//void L_Flee::on_exit()
+//{
+//    agent->set_movement_speed(originSpeed);
+//}

@@ -18,26 +18,18 @@ void D_KeepTryingUntilFourTimesOrSuccess::on_update(float dt)
     if (counter < 0)
     {
         on_failure();
+        agent->set_active_status(false);
+        child->set_status(NodeStatus::EXITING);
     }
     child->tick(dt);
 
-    
-
-    /*if (child->failed())
-    {
-        ++counter;
-        
-        if (counter == 4)
-        {
-            
-        }
-        else
-        {
-            child->set_status(NodeStatus::READY);
-        }
-    }*/
     if (child->succeeded())
     {
         on_success();
     }
+    else if (child->failed())
+    {
+        child->set_status(NodeStatus::READY);
+    }
+    display_leaf_text();
 }

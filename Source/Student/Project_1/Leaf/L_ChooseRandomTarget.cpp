@@ -10,7 +10,7 @@ void L_ChooseRandomTarget::on_enter()
         return;
     }
     speed = agent->get_movement_speed();
-    agent->set_movement_speed(1.2f*speed);
+    agent->set_movement_speed(1.5f*speed);
     counter = RNG::range(0.f, 50.f);
     // get a list of all current agents
     const auto& allAgents = agents->get_all_agents();
@@ -29,7 +29,11 @@ void L_ChooseRandomTarget::on_enter()
 
         target = allAgents[RNG::range(0, static_cast<int>(allAgents.size() - 1))];
     }
-
+    if (agents->get_all_agents_by_type("Criminal").size() == 0)
+    {
+        on_failure();
+        return;
+    }
     BehaviorNode::on_leaf_enter();
 }
 
@@ -40,7 +44,8 @@ void L_ChooseRandomTarget::on_update(float dt)
     {
         on_failure();
     }
-    else if(Vec3::Distance(agent->get_position(), target->get_position()) <= 15.f)
+    agent->move_toward_point(target->get_position(), dt);
+    if(Vec3::Distance(agent->get_position(), target->get_position()) <= 15.f)
     {
         if (Vec3::Distance(agent->get_position(), target->get_position()) <= 5.f)
         {
@@ -52,9 +57,10 @@ void L_ChooseRandomTarget::on_update(float dt)
             counter -= dt;
             if (counter <= 0)
             {
+                agent->set_active_status(false);
                 on_failure();
             }
-            agent->move_toward_point(target->get_position(),dt);
+            
         }
         
         

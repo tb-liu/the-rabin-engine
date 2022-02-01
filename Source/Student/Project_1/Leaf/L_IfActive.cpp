@@ -13,9 +13,13 @@ void L_IfActive::on_update(float dt)
 	if (agent->get_active_status())
 	{
 		on_success();
-		return;
+		
 	}
-	on_failure();
+	else
+	{
+		on_failure();
+	}
+	
 
     display_leaf_text();
 }

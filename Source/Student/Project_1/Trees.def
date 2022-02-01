@@ -1,6 +1,6 @@
 #include "../Source/Student/Project_1/Trees/Civilian.bht"
 #include "../Source/Student/Project_1/Trees/Criminal.bht"
+#include "../Source/Student/Project_1/Trees/Detective.bht"
 #include "../Source/Student/Project_1/Trees/Example.bht"
 #include "../Source/Student/Project_1/Trees/Idle.bht"
 #include "../Source/Student/Project_1/Trees/Police.bht"
-#include "../Source/Student/Project_1/Trees/Detective.bht"
