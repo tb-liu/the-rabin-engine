@@ -6,32 +6,28 @@ D_KeepDoingForAPeriodOfTime::D_KeepDoingForAPeriodOfTime():counter(0)
 
 void D_KeepDoingForAPeriodOfTime::on_enter()
 {
-    counter = 200;
+    counter = RNG::range(15.f,30.f);
     BehaviorNode::on_enter();
 }
 
 void D_KeepDoingForAPeriodOfTime::on_update(float dt)
 {
-    // repeat the child until 4 successes, stop on any failure
+    
     BehaviorNode *child = children.front();
 
     child->tick(dt);
-
-    if (child->succeeded() == true)
+    counter -= dt;
+    if (counter <= 0)
     {
-        counter -= dt;
-
-        if (counter <= 0)
-        {
-            on_success();
-        }
-        else
-        {
-            child->set_status(NodeStatus::READY);
-        }
+        on_success();
+        return;
     }
-    else if (child->failed() == true)
+    
+    else if (child->succeeded() && counter > 0)
     {
-        on_failure();
+        child->set_status(NodeStatus::READY);
     }
+
+    display_leaf_text();
+    
 }

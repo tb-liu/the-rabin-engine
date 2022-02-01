@@ -15,11 +15,14 @@ void L_MoveToRandomPosition::on_enter()
 void L_MoveToRandomPosition::on_update(float dt)
 {
     const auto result = agent->move_toward_point(targetPoint, dt);
-
-    if (result == true)
+    if (agent->get_active_status())
+    {
+        on_failure();
+    }
+    else if (result == true)
     {
         on_success();
     }
 
-    display_leaf_text();
+    //display_leaf_text();
 }

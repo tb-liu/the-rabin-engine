@@ -1,5 +1,5 @@
 TREENAME(Criminal)
-TREENODE(C_Selector, 0)
+TREENODE(C_RandomSelector, 0)
 TREENODE(C_Sequencer, 1)
 TREENODE(C_Selector, 2)
 TREENODE(L_IfActive, 3)

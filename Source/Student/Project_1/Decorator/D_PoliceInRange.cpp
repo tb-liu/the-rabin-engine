@@ -13,10 +13,11 @@ void D_PoliceInRange::on_enter()
 
     Vec3 currPos = agent->get_position();
 
-    const auto& allAgents = agents->get_all_agents_by_type("Enemie");
+    const auto& allAgents = agents->get_all_agents_by_type("Police");
     if (allAgents.size() == 0)
     {
-        on_failure();
+        BehaviorNode::on_leaf_enter();
+        return;
     }
     for (const auto& a : allAgents)
     {
@@ -32,24 +33,26 @@ void D_PoliceInRange::on_enter()
 
     if (shortestDistance > Range)
     {
-        on_failure();
+        BehaviorNode::on_enter();
+       
+        return;
     }
 
-    BehaviorNode::on_leaf_enter();
+    
+    on_failure();
 }
 
-//void D_IfInRange::on_update(float dt)
-//{
-//    delay -= dt;
-//
-//    if (delay < 0.0f)
-//    {
-//        BehaviorNode *child = children.front();
-//
-//        child->tick(dt);
-//
-//        // assume same status as child
-//        set_status(child->get_status());
-//        set_result(child->get_result());
-//    }
-//}
+void D_PoliceInRange::on_update(float dt)
+{
+
+    
+    BehaviorNode *child = children.front();
+
+    child->tick(dt);
+
+    // assume same status as child
+    set_status(child->get_status());
+    set_result(child->get_result());
+    
+    display_leaf_text();
+}

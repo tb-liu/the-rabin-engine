@@ -4,7 +4,9 @@
 
 void L_CommitCrime::on_enter()
 {
-    
+    counter = RNG::range(50.f, 80.f);
+    speed = agent->get_movement_speed();
+    agent->set_movement_speed(1.75f*speed);
     // find the agent that is the furthest from this one
     float shortestDistance = std::numeric_limits<float>().max();
     Vec3 furthestPoint;
@@ -36,20 +38,38 @@ void L_CommitCrime::on_enter()
 
 void L_CommitCrime::on_update(float dt)
 {
+    agent->set_active_status(false);
     if (!target)
     {
         on_failure();
     }
-    else if(Vec3::Distance(agent->get_position(), target->get_position()) <= 10.f)
+    else if(Vec3::Distance(agent->get_position(), target->get_position()) <= 30.f)
     {
+        if (Vec3::Distance(agent->get_position(), target->get_position()) <= 10.f)
+        {
+            agents->destroy_agent(target);
+            on_success();
+        }
+        else
+        {
+            counter -= dt;
+            if (counter <= 0)
+            {
+                on_failure();
+            }
+            agent->move_toward_point(target->get_position(),dt);
+        }
         
-        agents->destroy_agent(target);
-        agent->set_active_status(false);
-        on_success();
+        
     }
-    else 
+    else
     {
         on_failure();
     }
     display_leaf_text();
+}
+
+void L_CommitCrime::on_exit()
+{
+    agent->set_movement_speed(speed);
 }

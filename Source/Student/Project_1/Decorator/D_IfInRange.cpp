@@ -13,7 +13,7 @@ void D_IfInRange::on_enter()
 
     Vec3 currPos = agent->get_position();
 
-    const auto& allAgents = agents->get_all_agents_by_type("Enemie");
+    const auto& allAgents = agents->get_all_agents_by_type("Criminal");
     if (allAgents.size() == 0)
     {
         on_failure();
@@ -35,21 +35,19 @@ void D_IfInRange::on_enter()
         on_failure();
     }
 
-    BehaviorNode::on_leaf_enter();
+    BehaviorNode::on_enter();
 }
 
-//void D_IfInRange::on_update(float dt)
-//{
-//    delay -= dt;
-//
-//    if (delay < 0.0f)
-//    {
-//        BehaviorNode *child = children.front();
-//
-//        child->tick(dt);
-//
-//        // assume same status as child
-//        set_status(child->get_status());
-//        set_result(child->get_result());
-//    }
-//}
+void D_IfInRange::on_update(float dt)
+{
+  
+        BehaviorNode *child = children.front();
+
+        child->tick(dt);
+
+        // assume same status as child
+        set_status(child->get_status());
+        set_result(child->get_result());
+ 
+
+}

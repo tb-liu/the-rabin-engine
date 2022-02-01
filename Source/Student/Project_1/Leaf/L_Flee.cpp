@@ -7,6 +7,7 @@ void L_Flee::on_enter()
     // set animation, speed, etc
     originSpeed = agent->get_movement_speed();
     agent->set_movement_speed(originSpeed * 1.75f);
+
     targetPoint = RNG::world_position();
     //agent->look_at_point(targetPoint);
 

@@ -16,7 +16,13 @@ void D_RepeatFourTimes::on_update(float dt)
     BehaviorNode *child = children.front();
 
     child->tick(dt);
-
+    // if state become active them break the loop
+    if (agent->get_active_status())
+    {
+        on_failure();
+        child->set_status(NodeStatus::EXITING);
+        return;
+    }
     if (child->succeeded() == true)
     {
         ++counter;

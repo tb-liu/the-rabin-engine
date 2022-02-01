@@ -5,13 +5,31 @@
 void ProjectOne::setup()
 {
     // Create your inital agents
-    agents->create_behavior_agent("Civilian", BehaviorTreeTypes::Civilian);
     
-    BehaviorAgent* police = agents->create_behavior_agent("Police", BehaviorTreeTypes::Police);
-    police->set_color(Vec3(0.094, 0.592, 0.749));
+    
+    for (int i = 0; i < 15; i++)
+    {
+        BehaviorAgent* civilian = agents->create_behavior_agent("Civilian", BehaviorTreeTypes::Civilian);
+        civilian->set_position(RNG::world_position());
+        civilian->set_scaling(2.f);
+    }
+    
 
-    BehaviorAgent* criminal = agents->create_behavior_agent("Criminal", BehaviorTreeTypes::Criminal);
-    criminal->set_color(Vec3(0.658, 0.043, 0.058));
+    for (int i = 0; i < 1; i++)
+    {
+        BehaviorAgent* police = agents->create_behavior_agent("Police", BehaviorTreeTypes::Police);
+        police->set_color(Vec3(0.094, 0.592, 0.749));
+        police->set_position(RNG::world_position());
+    }
+    
+    
+    for (int i = 0; i < RNG::range(5,7); i++)
+    {
+        BehaviorAgent* criminal = agents->create_behavior_agent("Criminal", BehaviorTreeTypes::Criminal);
+        criminal->set_color(Vec3(0.658f, 0.043f, 0.058f));
+        criminal->set_position(RNG::world_position());
+    }
+    
     // you can technically load any map you want, even create your own map file,
     // but behavior agents won't actually avoid walls or anything special, unless you code that yourself
     // that's the realm of project 2 though

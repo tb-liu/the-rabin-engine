@@ -32,7 +32,11 @@ void L_MoveToPolice::on_enter()
     // set animation, speed, etc
     this->agent->get_behavior_tree().get_tree_name();
     //agent->look_at_point(targetPoint);
-    int targetIndex = RNG::range(0, static_cast<int>(validTargets.size() - 1));
+    int targetIndex = 0;
+    if (validTargets.size() > 1)
+    {
+        targetIndex = RNG::range(0, static_cast<int>(validTargets.size() - 1));
+    }
     target = allAgents[targetIndex];
 	BehaviorNode::on_leaf_enter();
 }
@@ -43,14 +47,14 @@ void L_MoveToPolice::on_update(float dt)
     const auto result = agent->move_toward_point(target->get_position(), dt);
 
     // check the distance between civilian and police
-    if (result && Vec3::Distance(agent->get_position(), target->get_position()) <= 10.f)
+    if (result == true && Vec3::Distance(agent->get_position(), target->get_position()) <= 10.f)
     {
         on_success();
     }
-    else
+    /*else
     {
         on_failure();
-    }
+    }*/
 
     display_leaf_text();
 }

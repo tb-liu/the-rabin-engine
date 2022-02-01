@@ -15,6 +15,7 @@ void L_Capture::on_enter()
     const auto& allAgents = agents->get_all_agents_by_type("Criminal");
     if (allAgents.size() == 0)
     {
+        agent->set_active_status(false);
         on_failure();
     }
     for (const auto& a : allAgents)
@@ -39,6 +40,7 @@ void L_Capture::on_update(float dt)
     if (!target)
     {
         on_failure();
+        return;
     }
     else
     {

@@ -25,4 +25,6 @@ void D_Delay::on_update(float dt)
         set_status(child->get_status());
         set_result(child->get_result());
     }
+
+    display_leaf_text();
 }

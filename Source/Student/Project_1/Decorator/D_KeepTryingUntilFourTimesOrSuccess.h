@@ -7,7 +7,7 @@ public:
     D_KeepTryingUntilFourTimesOrSuccess();
 
 protected:
-    unsigned counter;
+    float counter;
 
     virtual void on_enter() override;
     virtual void on_update(float dt) override;

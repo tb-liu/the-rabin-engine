@@ -4,11 +4,7 @@
 
 void L_SetActive::on_enter()
 {
-	if (agent->get_active_status())
-	{
-		on_success();
-		return;
-	}
+	
 	BehaviorNode::on_leaf_enter();
 }
 
