@@ -1,6 +1,6 @@
 #pragma once
 #include "Misc/PathfindingDetails.hpp"
-
+#include <vector>
 class AStarPather
 {
 public:
@@ -22,5 +22,25 @@ public:
         It doesn't all need to be in this header and cpp, structure it whatever way
         makes sense to you.
     */
-
+private:
+    struct NodeInfo
+    {
+        GridPos current;
+        GridPos parent;
+        float Fcost;
+        float Gcost;
+        NodeInfo(GridPos & cur, GridPos & prev, float Gcos, float Fcos): current(cur), parent(prev), Gcost(Gcos), Fcost(Fcos){}
+    };
+    bool switchingMap = true;
+    float heuristicsCalculation(const PathRequest& request,GridPos& currentPos,GridPos& goal);
+    int findTheCheapestIndex(const std::vector<NodeInfo> & list);
+    int findNodeWithValue(const std::vector<NodeInfo>& list,const GridPos & target);
+    char checkValidNeighbors(GridPos target);
+    float getNeighbor(const int & index, GridPos& currentPos);
+    float Euclidean(GridPos& currentPos, GridPos& targetPos);
+    float Octile(GridPos& currentPos, GridPos& targetPos);
+    float Chebyshev(GridPos& currentPos, GridPos& targetPos);
+    float Manhattan(GridPos& currentPos, GridPos& targetPos);
+    void mapChange();
+    std::vector<NodeInfo> openList, closeList;
 };
