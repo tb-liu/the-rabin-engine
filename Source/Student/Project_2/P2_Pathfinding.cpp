@@ -204,8 +204,11 @@ PathResult AStarPather::compute_path(PathRequest &request)
         terrain->set_color(tempNode.current, Colors::Yellow);
         closeList.push_back(tempNode);
         
-        // TODO: if take too long return imporgress
-        return PathResult::PROCESSING;
+        if (request.settings.singleStep)
+        {
+            return PathResult::PROCESSING;
+        }
+        
     }
 
     // Just sample code, safe to delete
