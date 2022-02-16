@@ -90,25 +90,31 @@ PathResult AStarPather::compute_path(PathRequest &request)
     // WRITE YOUR CODE HERE
     if (switchingMap)
     {
-        openList.clear();
-        closeList.clear();
         openList.reserve(terrain->get_map_height() * terrain->get_map_width());
         closeList.reserve(terrain->get_map_height() * terrain->get_map_width());
         switchingMap = false;
     }
-    openList.clear();
-    closeList.clear();
     // push the start node
     GridPos start = terrain->get_grid_position(request.start),
-            end = terrain->get_grid_position(request.goal);
-    if (start == end)
+        end = terrain->get_grid_position(request.goal);
+    if (request.newRequest)
     {
-        return PathResult::COMPLETE;
+        if (start == end)
+        {
+            return PathResult::COMPLETE;
+        }
+        openList.clear();
+        closeList.clear();
+        openList.push_back(NodeInfo(start, start, 0, heuristicsCalculation(request, start, end)));
+        terrain->set_color(start, Colors::Blue);
+
     }
+    
+    
+   
     GridPos neighborNode;
 
-    openList.push_back(NodeInfo(start, start, 0,heuristicsCalculation(request, start, end)));
-    terrain->set_color(start, Colors::Blue);
+    
 
     int cheapestNode = -1;
     char neighbors = NULL;
@@ -199,6 +205,7 @@ PathResult AStarPather::compute_path(PathRequest &request)
         closeList.push_back(tempNode);
         
         // TODO: if take too long return imporgress
+        return PathResult::PROCESSING;
     }
 
     // Just sample code, safe to delete
