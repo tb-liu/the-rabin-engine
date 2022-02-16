@@ -133,6 +133,10 @@ PathResult AStarPather::compute_path(PathRequest &request)
             }
             request.path.push_front(request.start);
             terrain->set_color(openList[cheapestNode].current, Colors::Yellow);
+            if (request.settings.rubberBanding)
+            {
+                rybberBanding(request);
+            }
             return PathResult::COMPLETE;
         }
         
@@ -391,4 +395,52 @@ float AStarPather::Manhattan(GridPos& currentPos, GridPos& targetPos)
 void AStarPather::mapChange()
 {
     switchingMap = true;
+}
+
+void AStarPather::rybberBanding(PathRequest& request)
+{
+    std::list<Vec3>::iterator it = request.path.begin();
+    std::list<Vec3>::iterator middleIt = ++it;
+    std::list<Vec3>::iterator lastIt = ++it;
+    it = request.path.begin();
+    for (; lastIt != request.path.end(); ++lastIt)
+    {
+        GridPos A = terrain->get_grid_position(*it),
+            B = terrain->get_grid_position(*lastIt);
+        if (canEliminate(A, B))
+        {
+            std::list<Vec3>::iterator temp = middleIt;
+            ++middleIt;
+            request.path.erase(temp);
+
+            
+        }
+        else
+        {
+            ++it;
+            ++middleIt;
+        }
+    }
+}
+
+bool AStarPather::canEliminate(const GridPos& first, const GridPos& second)
+{
+    int xMin = std::min(first.col, second.col),
+        yMin = std::min(first.row, second.row),
+        xMax = std::max(first.col, second.col),
+        yMax = std::max(first.row, second.row);
+    for (int i = xMin; i <= xMax; ++i)
+    {
+        for (int j = yMin; j <= yMax; ++j)
+        {
+            GridPos temp;
+            temp.col = i;
+            temp.row = j;
+            if (terrain->is_wall(temp))
+            {
+                return false;
+            }
+        }
+    }
+    return true;
 }

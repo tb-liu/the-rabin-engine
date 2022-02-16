@@ -41,6 +41,8 @@ private:
     float Octile(GridPos& currentPos, GridPos& targetPos);
     float Chebyshev(GridPos& currentPos, GridPos& targetPos);
     float Manhattan(GridPos& currentPos, GridPos& targetPos);
+    bool canEliminate(const GridPos& currentPos, const GridPos& targetPos);
+    void rybberBanding(PathRequest& request);
     void mapChange();
     std::vector<NodeInfo> openList, closeList;
 };
