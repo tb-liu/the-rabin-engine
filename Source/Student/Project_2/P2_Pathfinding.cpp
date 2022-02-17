@@ -123,7 +123,7 @@ PathResult AStarPather::compute_path(PathRequest &request)
         cheapestNode = findTheCheapestIndex(openList);
         if (openList[cheapestNode].current == end)
         {
-            // TODO: reconstruct the path
+            // reconstruct the path
             int index = findNodeWithValue(closeList,openList[cheapestNode].parent);
             request.path.push_front(request.goal);
             while (closeList[index].current != start)
@@ -133,9 +133,15 @@ PathResult AStarPather::compute_path(PathRequest &request)
             }
             request.path.push_front(request.start);
             terrain->set_color(openList[cheapestNode].current, Colors::Yellow);
+            // if rubberbanding
             if (request.settings.rubberBanding)
             {
                 rybberBanding(request);
+            }
+            // if smoothing
+            if (request.settings.smoothing)
+            {
+                catmullRomSpline(request);
             }
             return PathResult::COMPLETE;
         }
@@ -412,8 +418,6 @@ void AStarPather::rybberBanding(PathRequest& request)
             std::list<Vec3>::iterator temp = middleIt;
             ++middleIt;
             request.path.erase(temp);
-
-            
         }
         else
         {
@@ -421,6 +425,68 @@ void AStarPather::rybberBanding(PathRequest& request)
             ++middleIt;
         }
     }
+}
+
+void AStarPather::insertSmoothPoints(PathRequest& request, const std::list<Vec3>::iterator& p1, const std::list<Vec3>::iterator& p2, const std::list<Vec3>::iterator& p3, const std::list<Vec3>::iterator& p4)
+{
+    for (int i = 1; i <= 3; i++)
+    {
+        request.path.insert(p3, Vec3::CatmullRom(*p1, *p2, *p3, *p4, i * 0.25f));
+    }
+}
+
+void AStarPather::catmullRomSpline(PathRequest& request)
+{
+    // calculate grid distance in world space
+    float gridUnit = 1.5f * (100.f / terrain->get_map_height());
+
+    // filling up the space
+    std::list<Vec3>::iterator p1 = request.path.begin();
+    std::list<Vec3>::iterator p4 = ++p1;
+    p1 = request.path.begin();
+    for (; p4 != request.path.end(); ++p4)
+    {
+        // if insert more points
+        float dis = Vec3::Distance(*p1, *p4);
+        int numDiv = 0;
+        Vec3 vector = *p4 - *p1;
+        if (dis > gridUnit)
+        {
+            numDiv = static_cast<int>(std::ceil(dis / gridUnit));
+            vector /= static_cast<float>(numDiv);
+        }
+        // add points
+        for (int i = 1; i < numDiv; i++)
+        {
+            request.path.insert(p4, *p1 + vector * static_cast<float>(i));
+        }
+        p1 = p4;
+    }
+
+    // smoothing
+    p1 = request.path.begin();
+    std::list<Vec3>::iterator p2 = request.path.begin();
+    std::list<Vec3>::iterator p3 = ++p2;
+    p4 = ++p2;
+    p2 = p1;
+    // special begin case
+    insertSmoothPoints(request, p1,p2,p3,p4);
+
+    // normal midlle case
+    p2 = p3;
+    p3 = p4;
+    ++p4;
+    while (p4 != request.path.end())
+    {
+        insertSmoothPoints(request, p1, p2, p3, p4);
+        p1 = p2;
+        p2 = p3;
+        p3 = p4;
+        ++p4;
+    }
+
+    //special last case
+    insertSmoothPoints(request, p1, p2, p3, p3);
 }
 
 bool AStarPather::canEliminate(const GridPos& first, const GridPos& second)

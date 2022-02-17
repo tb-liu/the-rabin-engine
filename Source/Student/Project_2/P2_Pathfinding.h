@@ -43,6 +43,8 @@ private:
     float Manhattan(GridPos& currentPos, GridPos& targetPos);
     bool canEliminate(const GridPos& currentPos, const GridPos& targetPos);
     void rybberBanding(PathRequest& request);
+    void insertSmoothPoints(PathRequest& request, const std::list<Vec3>::iterator& p1, const std::list<Vec3>::iterator& p2, const std::list<Vec3>::iterator& p3, const std::list<Vec3>::iterator& p4);
+    void catmullRomSpline(PathRequest& request);
     void mapChange();
     std::vector<NodeInfo> openList, closeList;
 };
