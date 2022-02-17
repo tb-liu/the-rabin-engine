@@ -106,7 +106,8 @@ PathResult AStarPather::compute_path(PathRequest &request)
         openList.clear();
         closeList.clear();
         openList.push_back(NodeInfo(start, start, 0, heuristicsCalculation(request, start, end)));
-        terrain->set_color(start, Colors::Blue);
+        if(request.settings.debugColoring)
+            terrain->set_color(start, Colors::Blue);
 
     }
     
@@ -132,7 +133,8 @@ PathResult AStarPather::compute_path(PathRequest &request)
                 index = findNodeWithValue(closeList, closeList[index].parent);
             }
             request.path.push_front(request.start);
-            terrain->set_color(openList[cheapestNode].current, Colors::Yellow);
+            if (request.settings.debugColoring)
+                terrain->set_color(openList[cheapestNode].current, Colors::Yellow);
             // if rubberbanding
             if (request.settings.rubberBanding)
             {
@@ -152,7 +154,8 @@ PathResult AStarPather::compute_path(PathRequest &request)
 
         // pop this node
         openList[cheapestNode] = openList[openList.size() - 1];
-        terrain->set_color(tempNode.current, Colors::Yellow);
+        if (request.settings.debugColoring)
+            terrain->set_color(tempNode.current, Colors::Yellow);
         openList.pop_back();
 
         for (int i = 7; i >= 0; --i) 
@@ -195,7 +198,8 @@ PathResult AStarPather::compute_path(PathRequest &request)
                                 closeList.pop_back();
                                 // push the node onto the openlist
                                 openList.push_back(NodeInfo(neighborNode, tempNode.current, tempNode.Gcost + addCost, Fcost));
-                                terrain->set_color(neighborNode, Colors::Blue);
+                                if (request.settings.debugColoring)
+                                    terrain->set_color(neighborNode, Colors::Blue);
                             }
                         }
                         // if not on both list
@@ -203,7 +207,8 @@ PathResult AStarPather::compute_path(PathRequest &request)
                         {
                             // push the node onto the openlist
                             openList.push_back(NodeInfo(neighborNode, tempNode.current, tempNode.Gcost + addCost, Fcost));
-                            terrain->set_color(neighborNode, Colors::Blue);
+                            if (request.settings.debugColoring)
+                                terrain->set_color(neighborNode, Colors::Blue);
                         }
                         
                     }
@@ -211,7 +216,8 @@ PathResult AStarPather::compute_path(PathRequest &request)
 
             }
         }
-        terrain->set_color(tempNode.current, Colors::Yellow);
+        if (request.settings.debugColoring)
+            terrain->set_color(tempNode.current, Colors::Yellow);
         closeList.push_back(tempNode);
         
         if (request.settings.singleStep)
