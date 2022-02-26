@@ -266,6 +266,58 @@ void analyze_visibility(MapLayer<float> &layer)
     }
 }
 
+bool ifNeighborVisible(const int& index, GridPos currentPos,const MapLayer<float>& layer)
+{
+    float cost = 0;
+    switch (index)
+    {
+        // left
+    case 0:
+        --currentPos.col;
+        break;
+        // up left
+    case 1:
+        --currentPos.col;
+        ++currentPos.row;
+        break;
+        // up 
+    case 2:
+        ++currentPos.row;
+        break;
+        // up right
+    case 3:
+        ++currentPos.col;
+        ++currentPos.row;
+        break;
+        // right
+    case 4:
+        ++currentPos.col;
+        break;
+        // down right
+    case 5:
+        ++currentPos.col;
+        --currentPos.row;
+        break;
+        // down
+    case 6:
+        --currentPos.row;
+        break;
+        // down left
+    case 7:
+        --currentPos.col;
+        --currentPos.row;
+        break;
+    }
+
+    if (terrain->is_valid_grid_position(currentPos) && !terrain->is_wall(currentPos) && layer.get_value(currentPos) == 1.f)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+
 void analyze_visible_to_cell(MapLayer<float> &layer, int row, int col)
 {
     /*
@@ -303,7 +355,25 @@ void analyze_visible_to_cell(MapLayer<float> &layer, int row, int col)
     }
 
     // check the cell close to visible
-
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            GridPos temp;
+            temp.row = i, temp.col = j;
+            if (layer.get_value(temp) == 0.f)
+            {
+                for (int x = 0; x < 8; ++x)
+                {
+                    if (ifNeighborVisible(x, temp, layer))
+                    {
+                        layer.set_value(i, j, 0.5f);
+                        break;
+                    }
+                }
+            }
+        }
+    }
 }
 
 void analyze_agent_vision(MapLayer<float> &layer, const Agent *agent)
