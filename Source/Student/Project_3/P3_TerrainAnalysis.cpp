@@ -7,9 +7,18 @@
 
 #include <iostream>
 
+const float SmallFloatValue = 0.001f;
+
 bool ProjectThree::implemented_fog_of_war() const // extra credit
 {
     return false;
+}
+
+float Euclidean(int currentRow, int currentCol, int targetRow, int targetCol)
+{
+    float xDiff = static_cast<float>(currentRow - targetRow),
+        zDiff = static_cast<float>(currentCol - targetCol);
+    return std::sqrt(xDiff * xDiff + zDiff * zDiff);
 }
 
 float distance_to_closest_wall(int row, int col)
@@ -23,8 +32,72 @@ float distance_to_closest_wall(int row, int col)
     */
 
     // WRITE YOUR CODE HERE
-    
-    return 0.0f; // REPLACE THIS
+    bool findResult = false;
+    float result =  std::numeric_limits<float>::max();
+    int top = row + 1, bottom = row - 1, left = col - 1, right = col + 1;
+    while (!findResult)
+    {
+        // top row
+        for (int i = left; i <= right; i++)
+        {
+            if (terrain->is_valid_grid_position(top, i) && terrain->is_wall(top, i))
+            {
+                findResult = true;
+                float dis = Euclidean(row, col, top, i);
+                if (result > dis)
+                {
+                    result = dis;
+                }
+            }
+        }
+        // bottom row
+        for (int i = left; i <= right; i++)
+        {
+            if (terrain->is_valid_grid_position(bottom, i) && terrain->is_wall(bottom, i))
+            {
+                findResult = true;
+                float dis = Euclidean(row, col, bottom, i);
+                if (result > dis)
+                {
+                    result = dis;
+                }
+            }
+        }
+
+        // left col
+        for (int i = bottom + 1; i < top; i++)
+        {
+            if (terrain->is_valid_grid_position(i, left) && terrain->is_wall(i, left))
+            {
+                findResult = true;
+                float dis = Euclidean(row, col, i, left);
+                if (result > dis)
+                {
+                    result = dis;
+                }
+            }
+        }
+
+        // right col
+        for (int i = bottom + 1; i < top; i++)
+        {
+            if (terrain->is_valid_grid_position(i, right) && terrain->is_wall(i, right))
+            {
+                findResult = true;
+                float dis = Euclidean(row, col, i, right);
+                if (result > dis)
+                {
+                    result = dis;
+                }
+            }
+        }
+
+        top += 1;
+        bottom -= 1;
+        left -= 1;
+        right += 1;
+    }
+    return  result;
 }
 
 bool is_clear_path(int row0, int col0, int row1, int col1)
@@ -38,9 +111,65 @@ bool is_clear_path(int row0, int col0, int row1, int col1)
         function in the global terrain to determine if a cell is a wall or not.
     */
 
-    // WRITE YOUR CODE HERE
+    float gridUnit = 100.f / terrain->get_map_height();
+    float halfCell = gridUnit / 2;
+    int xMin = std::min(col0, col1),
+        yMin = std::min(row0, row1),
+        xMax = std::max(col0, col1),
+        yMax = std::max(row0, row1);
 
-    return false; // REPLACE THIS
+
+    Vec3 worldStart, worldEnd;
+    worldStart = terrain->get_world_position(row0, col0);
+    worldEnd = terrain->get_world_position(row1, col1);
+
+    Vec2 start2V(worldStart.x, worldStart.z),
+         end2V(worldEnd.x, worldEnd.z);
+    
+
+    for (int i = xMin; i <= xMax; ++i)
+    {
+        for (int j = yMin; j <= yMax; ++j)
+        {
+            GridPos temp;
+            temp.col = i;
+            temp.row = j;
+            if (terrain->is_wall(temp))
+            {
+                // test if the wall intersect with the line
+                Vec3 pos = terrain->get_world_position(temp);
+                
+                Vec2 topLeft(pos.x - halfCell, pos.z + halfCell), 
+                     topRight(pos.x + halfCell, pos.z + halfCell),
+                     bottomLeft(pos.x - halfCell, pos.z - halfCell),
+                     bottomRight(pos.x + halfCell, pos.z - halfCell);
+                // if intersect with top edge of this cell 
+                if (line_intersect(start2V, end2V, topLeft - Vec2(SmallFloatValue,0.f), topRight + Vec2(SmallFloatValue, 0.f)))
+                {
+                    return true;
+                }
+                // if intersect with left edge of this cell 
+                else if (line_intersect(start2V, end2V, topLeft + Vec2(0.f, SmallFloatValue), bottomLeft - Vec2(0.f, SmallFloatValue)))
+                {
+                    return true;
+                }
+                // if intersect with bottom edge of this cell 
+                else if (line_intersect(start2V, end2V, bottomLeft - Vec2(SmallFloatValue, 0.f), Vec2(SmallFloatValue, 0.f)))
+                {
+                    return true;
+                }
+                // if intersect with right edge of this cell 
+                else if (line_intersect(start2V, end2V, topRight + Vec2(0.f, SmallFloatValue), bottomRight - Vec2(0.f, SmallFloatValue)))
+                {
+                    return true;
+                }
+
+            }
+        }
+    }
+    
+
+    return true; // REPLACE THIS
 }
 
 void analyze_openness(MapLayer<float> &layer)
@@ -51,7 +180,23 @@ void analyze_openness(MapLayer<float> &layer)
         distance_to_closest_wall helper function.  Walls should not be marked.
     */
 
+
     // WRITE YOUR CODE HERE
+    int gridSize = terrain->get_map_height();
+
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j) 
+        {
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
+            float dis = distance_to_closest_wall(i, j);
+            dis = 1.f / (dis * dis);
+            layer.set_value(i, j, dis);
+        }
+    }
 }
 
 void analyze_visibility(MapLayer<float> &layer)
@@ -67,6 +212,58 @@ void analyze_visibility(MapLayer<float> &layer)
     */
 
     // WRITE YOUR CODE HERE
+    int gridSize = terrain->get_map_height();
+
+    // initial all to 0.f
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
+            
+            layer.set_value(i, j, 0.f);
+
+        }
+    }
+    
+    float temp;
+    // calculate all visibility 
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            int count = 0;
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
+
+            // test if this cell is visible form the other
+            for (int targetI = i; targetI < gridSize; ++targetI)
+            {
+                for (int  targetJ = j + 1; targetJ < gridSize; ++targetJ)
+                {
+                    if (terrain->is_wall(targetI, targetJ))
+                    {
+                        continue;
+                    }
+                    if (is_clear_path(i,j, targetI, targetJ))
+                    {
+                        ++count;
+                        temp = layer.get_value(targetI, targetJ) + 1.0f;
+                        layer.set_value(targetI, targetJ, temp);
+                    }
+                }
+            }
+            // calculate the visible value
+            temp = layer.get_value(i, j) + static_cast<float>(count);
+            temp = std::clamp(temp / 160.f, 0.f, 1.f);
+            layer.set_value(i, j, temp);
+        }
+    }
 }
 
 void analyze_visible_to_cell(MapLayer<float> &layer, int row, int col)
@@ -82,6 +279,31 @@ void analyze_visible_to_cell(MapLayer<float> &layer, int row, int col)
     */
 
     // WRITE YOUR CODE HERE
+    int gridSize = terrain->get_map_height();
+
+
+    // test if this cell is visible form the other
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            if (terrain->is_wall(i, j) || (i == row && j == col))
+            {
+                continue;
+            }
+            if (is_clear_path(row, col, i, j))
+            {
+                layer.set_value(i, j, 1.f);
+            }
+            else
+            {
+                layer.set_value(i, j, 0.f);
+            }
+        }
+    }
+
+    // check the cell close to visible
+
 }
 
 void analyze_agent_vision(MapLayer<float> &layer, const Agent *agent)
