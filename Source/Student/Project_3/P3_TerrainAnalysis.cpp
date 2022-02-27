@@ -8,6 +8,8 @@
 #include <iostream>
 
 const float SmallFloatValue = 0.001f;
+const float ViewAngleCos = -0.08715574f;
+const float sqrt2 = 1.414213562373f;
 
 bool ProjectThree::implemented_fog_of_war() const // extra credit
 {
@@ -397,6 +399,93 @@ void analyze_agent_vision(MapLayer<float> &layer, const Agent *agent)
     */
 
     // WRITE YOUR CODE HERE
+    Vec3 forwardVec3 = agent->get_forward_vector();
+    Vec3 posVec3 = agent->get_position();
+    GridPos gridPos = terrain->get_grid_position(posVec3);
+    Vec2 forwardVec2(forwardVec3.x, forwardVec3.z);
+    forwardVec2.Normalize();
+    
+
+    int gridSize = terrain->get_map_height();
+
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
+            Vec3 targetVec3 = terrain->get_world_position(i, j);
+            Vec2 targetVec2((targetVec3 - posVec3).x, (targetVec3 - posVec3).y);
+            targetVec2.Normalize();
+            float dotP = forwardVec2.Dot(targetVec2);
+            // if within view angle
+            if (dotP < ViewAngleCos)
+            {
+                if (is_clear_path(i, j, gridPos.row, gridPos.col))
+                {
+                    layer.set_value(i, j, 1.f);
+                }
+            }
+        }
+    }
+}
+
+
+float getNeighborValue(const int& index, GridPos currentPos, const MapLayer<float>& layer)
+{
+    float coefi = 1.f;
+    switch (index)
+    {
+        // left
+    case 0:
+        --currentPos.col;
+        break;
+        // up left
+    case 1:
+        --currentPos.col;
+        ++currentPos.row;
+        coefi = sqrt2;
+        break;
+        // up 
+    case 2:
+        ++currentPos.row;
+        break;
+        // up right
+    case 3:
+        ++currentPos.col;
+        ++currentPos.row;
+        coefi = sqrt2;
+        break;
+        // right
+    case 4:
+        ++currentPos.col;
+        break;
+        // down right
+    case 5:
+        ++currentPos.col;
+        --currentPos.row;
+        coefi = sqrt2;
+        break;
+        // down
+    case 6:
+        --currentPos.row;
+        break;
+        // down left
+    case 7:
+        --currentPos.col;
+        --currentPos.row;
+        coefi = sqrt2;
+        break;
+    }
+
+    if (terrain->is_valid_grid_position(currentPos) && !terrain->is_wall(currentPos))
+    {
+        return layer.get_value(currentPos) * coefi;
+    }
+
+    return -99.9f;
 }
 
 void propagate_solo_occupancy(MapLayer<float> &layer, float decay, float growth)
@@ -415,7 +504,43 @@ void propagate_solo_occupancy(MapLayer<float> &layer, float decay, float growth)
         the given layer;
     */
     
+    
+
     // WRITE YOUR CODE HERE
+    float  tempLayer[40][40] = { {0.f} };
+    int gridSize = terrain->get_map_height();
+
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            float maxValue = std::numeric_limits<float>::min();
+            float neighborValue = 0.f;
+            GridPos tempGrid;
+            tempGrid.row = i, tempGrid.col = j;
+            // get the max decayed influence value
+            for (int x = 0; x < 8; ++x)
+            {
+                neighborValue = layer.get_value(tempGrid) - exp(getNeighborValue(x, tempGrid, layer) * decay * -1.f);
+                if (neighborValue > maxValue)
+                {
+                    maxValue = neighborValue;
+                }
+            }
+
+            // apply linear interpolation 
+            tempLayer[i][j] = lerp(layer.get_value(tempGrid), maxValue, growth);
+        }
+    }
+
+    // copy temp layer back
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            layer.set_value(i, j, tempLayer[i][j]);
+        }
+    }
 }
 
 void propagate_dual_occupancy(MapLayer<float> &layer, float decay, float growth)
@@ -437,6 +562,42 @@ void propagate_dual_occupancy(MapLayer<float> &layer, float decay, float growth)
     */
 
     // WRITE YOUR CODE HERE
+    float  tempLayer[40][40] = { {0.f} };
+    int gridSize = terrain->get_map_height();
+
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            float maxValue = std::numeric_limits<float>::min();
+            float neighborValue = 0.f;
+            GridPos tempGrid;
+            tempGrid.row = i, tempGrid.col = j;
+            // get the max decayed influence value
+            for (int x = 0; x < 8; ++x)
+            {
+                neighborValue = layer.get_value(tempGrid) - exp(getNeighborValue(x, tempGrid, layer) * decay * -1.f);
+                neighborValue = abs(neighborValue);
+                if (neighborValue > maxValue)
+                {
+                    maxValue = neighborValue;
+                }
+            }
+
+            // apply linear interpolation 
+            tempLayer[i][j] = lerp(layer.get_value(tempGrid), maxValue, growth);
+        }
+    }
+
+    // copy temp layer back
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            layer.set_value(i, j, tempLayer[i][j]);
+        }
+    }
+
 }
 
 void normalize_solo_occupancy(MapLayer<float> &layer)
@@ -448,6 +609,29 @@ void normalize_solo_occupancy(MapLayer<float> &layer)
     */
 
     // WRITE YOUR CODE HERE
+    int gridSize = terrain->get_map_height();
+    float maxValue = std::numeric_limits<float>::min();
+
+    // find the greatest 
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            if (maxValue < layer.get_value(i, j))
+            {
+                maxValue = layer.get_value(i, j);
+            }
+        }
+    }
+    // normalize 
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            float temp = layer.get_value(i, j);
+            layer.set_value(i, j, temp / maxValue);
+        }
+    }
 }
 
 void normalize_dual_occupancy(MapLayer<float> &layer)
@@ -462,6 +646,43 @@ void normalize_dual_occupancy(MapLayer<float> &layer)
     */
 
     // WRITE YOUR CODE HERE
+    int gridSize = terrain->get_map_height();
+    float maxValue = std::numeric_limits<float>::min();
+    float minValue = std::numeric_limits<float>::max();
+
+    // find the greatest 
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            if (maxValue < layer.get_value(i, j))
+            {
+                maxValue = layer.get_value(i, j);
+            }
+            if (minValue > layer.get_value(i, j))
+            {
+                minValue = layer.get_value(i, j);
+            }
+        }
+    }
+    minValue = abs(minValue);
+    // normalize 
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            float temp = layer.get_value(i, j);
+            if (temp > 0.f)
+            {
+                layer.set_value(i, j, temp / maxValue);
+            }
+            else
+            {
+                layer.set_value(i, j, temp / minValue);
+            }
+            
+        }
+    }
 }
 
 void enemy_field_of_view(MapLayer<float> &layer, float fovAngle, float closeDistance, float occupancyValue, AStarAgent *enemy)
