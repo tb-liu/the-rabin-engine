@@ -703,6 +703,57 @@ void enemy_field_of_view(MapLayer<float> &layer, float fovAngle, float closeDist
     */
 
     // WRITE YOUR CODE HERE
+    Vec3 forwardVec3 = enemy->get_forward_vector();
+    Vec3 posVec3 = enemy->get_position();
+    GridPos gridPos = terrain->get_grid_position(posVec3);
+    Vec2 forwardVec2(forwardVec3.x, forwardVec3.z);
+    forwardVec2.Normalize();
+
+    float viewCos = cos(fovAngle * (PI / 180.f));
+
+    int gridSize = terrain->get_map_height();
+
+
+    // clear all negative value
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            if (layer.get_value(i, j) < 0.f)
+            {
+                layer.set_value(i, j, 0.f);
+            }
+        }
+    }
+
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
+            Vec3 targetVec3 = terrain->get_world_position(i, j);
+            Vec2 targetVec2((targetVec3 - posVec3).x, (targetVec3 - posVec3).y);
+            targetVec2.Normalize();
+            float dotP = forwardVec2.Dot(targetVec2);
+
+            // if within view angle
+            if (dotP < viewCos)
+            {
+                if (is_clear_path(i, j, gridPos.row, gridPos.col))
+                {
+                    layer.set_value(i, j, occupancyValue);
+                }
+            }
+            // if within close distance
+            else if (Euclidean(i, j, gridPos.row, gridPos.col) < closeDistance && is_clear_path(i, j, gridPos.row, gridPos.col))
+            {
+                layer.set_value(i, j, occupancyValue);
+            }
+        }
+    }
 }
 
 bool enemy_find_player(MapLayer<float> &layer, AStarAgent *enemy, Agent *player)
@@ -743,6 +794,41 @@ bool enemy_seek_player(MapLayer<float> &layer, AStarAgent *enemy)
     */
 
     // WRITE YOUR CODE HERE
+    int gridSize = terrain->get_map_height();
+    float maxValue = std::numeric_limits<float>::min(),
+          closeDis = std::numeric_limits<float>::max();
+    float dis;
+    Vec3 posVec3 = enemy->get_position();
+    GridPos gridPos = terrain->get_grid_position(posVec3);
+    GridPos target;
+    bool Find = false;
+    for (int i = 0; i < gridSize; ++i)
+    {
+        for (int j = 0; j < gridSize; ++j)
+        {
+            float currentValue = layer.get_value(i, j);
+            if (currentValue > 0.f && currentValue >= maxValue)
+            {
+                Find = true;
+                dis = Euclidean(i, j, gridPos.row, gridPos.col);
+                if (currentValue > maxValue)
+                {
+                    closeDis = dis;
+                    maxValue = currentValue;
+                    target.row = i, target.col = j;
+                }
+                else if(closeDis > dis)
+                {
+                    closeDis = dis;
+                    target.row = i, target.col = j;
+                }
+            }
+        }
+    }
+    if (Find)
+    {
 
-    return false; // REPLACE THIS
+        enemy->path_to(terrain->get_world_position(target));
+    }
+    return Find; // REPLACE THIS
 }
