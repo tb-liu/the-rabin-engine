@@ -7,7 +7,7 @@
 
 #include <iostream>
 
-const float SmallFloatValue = 0.001f;
+const float SmallFloatValue = 0.0001f;
 const float ViewAngleCos = -0.08715574f;
 const float sqrt2 = 1.414213562373f;
 
@@ -34,6 +34,8 @@ float distance_to_closest_wall(int row, int col)
     */
 
     // WRITE YOUR CODE HERE
+    // TODO: need to fix stuff
+
     bool findResult = false;
     float result =  std::numeric_limits<float>::max();
     int top = row + 1, bottom = row - 1, left = col - 1, right = col + 1;
@@ -114,7 +116,7 @@ bool is_clear_path(int row0, int col0, int row1, int col1)
     */
 
     float gridUnit = 100.f / terrain->get_map_height();
-    float halfCell = gridUnit / 2;
+    float halfCell = gridUnit / 2.f;
     int xMin = std::min(col0, col1),
         yMin = std::min(row0, row1),
         xMax = std::max(col0, col1),
@@ -127,48 +129,72 @@ bool is_clear_path(int row0, int col0, int row1, int col1)
 
     Vec2 start2V(worldStart.x, worldStart.z),
          end2V(worldEnd.x, worldEnd.z);
-    
-
-    for (int i = xMin; i <= xMax; ++i)
+    // if on the same line
+    if (xMin == xMax)
     {
-        for (int j = yMin; j <= yMax; ++j)
+        for (int i = yMin; i < yMax; i++)
         {
-            GridPos temp;
-            temp.col = i;
-            temp.row = j;
-            if (terrain->is_wall(temp))
+            if (terrain->is_wall(i, xMax)) 
             {
-                // test if the wall intersect with the line
-                Vec3 pos = terrain->get_world_position(temp);
-                
-                Vec2 topLeft(pos.x - halfCell, pos.z + halfCell), 
-                     topRight(pos.x + halfCell, pos.z + halfCell),
-                     bottomLeft(pos.x - halfCell, pos.z - halfCell),
-                     bottomRight(pos.x + halfCell, pos.z - halfCell);
-                // if intersect with top edge of this cell 
-                if (line_intersect(start2V, end2V, topLeft - Vec2(SmallFloatValue,0.f), topRight + Vec2(SmallFloatValue, 0.f)))
-                {
-                    return true;
-                }
-                // if intersect with left edge of this cell 
-                else if (line_intersect(start2V, end2V, topLeft + Vec2(0.f, SmallFloatValue), bottomLeft - Vec2(0.f, SmallFloatValue)))
-                {
-                    return true;
-                }
-                // if intersect with bottom edge of this cell 
-                else if (line_intersect(start2V, end2V, bottomLeft - Vec2(SmallFloatValue, 0.f), Vec2(SmallFloatValue, 0.f)))
-                {
-                    return true;
-                }
-                // if intersect with right edge of this cell 
-                else if (line_intersect(start2V, end2V, topRight + Vec2(0.f, SmallFloatValue), bottomRight - Vec2(0.f, SmallFloatValue)))
-                {
-                    return true;
-                }
-
+                return false;
             }
         }
     }
+    // if on the same coloumn
+    else if (yMin == yMax)
+    {
+        for (int i = xMin; i < xMax; i++)
+        {
+            if (terrain->is_wall(yMax, i))
+            {
+                return false;
+            }
+        }
+    }
+    else
+    {
+        for (int i = xMin; i <= xMax; ++i)
+        {
+            for (int j = yMin; j <= yMax; ++j)
+            {
+                GridPos temp;
+                temp.col = i;
+                temp.row = j;
+                if (terrain->is_wall(temp))
+                {
+                    // test if the wall intersect with the line
+                    Vec3 pos = terrain->get_world_position(temp);
+
+                    Vec2 topLeft(pos.x - halfCell, pos.z + halfCell),
+                        topRight(pos.x + halfCell, pos.z + halfCell),
+                        bottomLeft(pos.x - halfCell, pos.z - halfCell),
+                        bottomRight(pos.x + halfCell, pos.z - halfCell);
+                    // if intersect with top edge of this cell 
+                    if (line_intersect(start2V, end2V, topLeft - Vec2(SmallFloatValue, 0.f), topRight + Vec2(SmallFloatValue, 0.f)))
+                    {
+                        return false;
+                    }
+                    // if intersect with left edge of this cell 
+                    else if (line_intersect(start2V, end2V, topLeft + Vec2(0.f, SmallFloatValue), bottomLeft - Vec2(0.f, SmallFloatValue)))
+                    {
+                        return false;
+                    }
+                    // if intersect with bottom edge of this cell 
+                    else if (line_intersect(start2V, end2V, bottomLeft - Vec2(SmallFloatValue, 0.f), Vec2(SmallFloatValue, 0.f)))
+                    {
+                        return false;
+                    }
+                    // if intersect with right edge of this cell 
+                    else if (line_intersect(start2V, end2V, topRight + Vec2(0.f, SmallFloatValue), bottomRight - Vec2(0.f, SmallFloatValue)))
+                    {
+                        return false;
+                    }
+
+                }
+            }
+        }
+    }
+    
     
 
     return true; // REPLACE THIS
@@ -242,11 +268,12 @@ void analyze_visibility(MapLayer<float> &layer)
             {
                 continue;
             }
-
+            int jValue = j + 1;
             // test if this cell is visible form the other
             for (int targetI = i; targetI < gridSize; ++targetI)
             {
-                for (int  targetJ = j + 1; targetJ < gridSize; ++targetJ)
+                
+                for (int  targetJ = jValue; targetJ < gridSize; ++targetJ)
                 {
                     if (terrain->is_wall(targetI, targetJ))
                     {
@@ -259,6 +286,7 @@ void analyze_visibility(MapLayer<float> &layer)
                         layer.set_value(targetI, targetJ, temp);
                     }
                 }
+                jValue = 0;
             }
             // calculate the visible value
             temp = layer.get_value(i, j) + static_cast<float>(count);
@@ -267,10 +295,34 @@ void analyze_visibility(MapLayer<float> &layer)
         }
     }
 }
+// for two diagonal nodes, if block by two wall
+bool canEliminate(const GridPos& first, const GridPos& second)
+{
+    int xMin = std::min(first.col, second.col),
+        yMin = std::min(first.row, second.row),
+        xMax = std::max(first.col, second.col),
+        yMax = std::max(first.row, second.row);
+    for (int i = xMin; i <= xMax; ++i)
+    {
+        for (int j = yMin; j <= yMax; ++j)
+        {
+            GridPos temp;
+            temp.col = i;
+            temp.row = j;
+            if (terrain->is_wall(temp))
+            {
 
+                return false;
+            }
+        }
+    }
+
+    return true;
+}
 bool ifNeighborVisible(const int& index, GridPos currentPos,const MapLayer<float>& layer)
 {
     float cost = 0;
+    GridPos temp = currentPos;
     switch (index)
     {
         // left
@@ -310,8 +362,8 @@ bool ifNeighborVisible(const int& index, GridPos currentPos,const MapLayer<float
         --currentPos.row;
         break;
     }
-
-    if (terrain->is_valid_grid_position(currentPos) && !terrain->is_wall(currentPos) && layer.get_value(currentPos) == 1.f)
+    // need to check if the neighber is from cornor and been blocked by a wall
+    if (terrain->is_valid_grid_position(currentPos) && !terrain->is_wall(currentPos) && layer.get_value(currentPos) == 1.f && canEliminate(currentPos, temp))
     {
         return true;
     }
@@ -363,7 +415,7 @@ void analyze_visible_to_cell(MapLayer<float> &layer, int row, int col)
         {
             GridPos temp;
             temp.row = i, temp.col = j;
-            if (layer.get_value(temp) == 0.f)
+            if (layer.get_value(temp) == 0.f && !terrain->is_wall(temp))
             {
                 for (int x = 0; x < 8; ++x)
                 {
@@ -417,13 +469,13 @@ void analyze_agent_vision(MapLayer<float> &layer, const Agent *agent)
                 continue;
             }
             Vec3 targetVec3 = terrain->get_world_position(i, j);
-            Vec2 targetVec2((targetVec3 - posVec3).x, (targetVec3 - posVec3).y);
+            Vec2 targetVec2((targetVec3 - posVec3).x, (targetVec3 - posVec3).z);
             targetVec2.Normalize();
             float dotP = forwardVec2.Dot(targetVec2);
             // if within view angle
-            if (dotP < ViewAngleCos)
+            if (dotP > ViewAngleCos)
             {
-                if (is_clear_path(i, j, gridPos.row, gridPos.col))
+                if (!terrain->is_wall(gridPos) && is_clear_path(i, j, gridPos.row, gridPos.col))
                 {
                     layer.set_value(i, j, 1.f);
                 }
@@ -433,59 +485,64 @@ void analyze_agent_vision(MapLayer<float> &layer, const Agent *agent)
 }
 
 
-float getNeighborValue(const int& index, GridPos currentPos, const MapLayer<float>& layer)
+float getNeighborValue(const int& index,const float & decay, GridPos currentPos, const MapLayer<float>& layer)
 {
-    float coefi = 1.f;
+    float cost = 0.f;
     switch (index)
     {
         // left
     case 0:
         --currentPos.col;
+        cost = 1.f;
         break;
         // up left
     case 1:
         --currentPos.col;
         ++currentPos.row;
-        coefi = sqrt2;
+        cost = sqrt2;
         break;
         // up 
     case 2:
         ++currentPos.row;
+        cost = 1.f;
         break;
         // up right
     case 3:
         ++currentPos.col;
         ++currentPos.row;
-        coefi = sqrt2;
+        cost = sqrt2;
         break;
         // right
     case 4:
         ++currentPos.col;
+        cost = 1.f;
         break;
         // down right
     case 5:
         ++currentPos.col;
         --currentPos.row;
-        coefi = sqrt2;
+        cost = sqrt2;
         break;
         // down
     case 6:
         --currentPos.row;
+        cost = 1.f;
         break;
         // down left
     case 7:
         --currentPos.col;
         --currentPos.row;
-        coefi = sqrt2;
+        cost = sqrt2;
         break;
     }
 
     if (terrain->is_valid_grid_position(currentPos) && !terrain->is_wall(currentPos))
     {
-        return layer.get_value(currentPos) * coefi;
+        //return layer.get_value(currentPos);
+        return layer.get_value(currentPos) * exp(-1.f * cost * decay);
     }
 
-    return -99.9f;
+    return 0.f;
 }
 
 void propagate_solo_occupancy(MapLayer<float> &layer, float decay, float growth)
@@ -514,14 +571,18 @@ void propagate_solo_occupancy(MapLayer<float> &layer, float decay, float growth)
     {
         for (int j = 0; j < gridSize; ++j)
         {
-            float maxValue = std::numeric_limits<float>::min();
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
+            float maxValue = -1.f;
             float neighborValue = 0.f;
             GridPos tempGrid;
             tempGrid.row = i, tempGrid.col = j;
             // get the max decayed influence value
             for (int x = 0; x < 8; ++x)
             {
-                neighborValue = layer.get_value(tempGrid) - exp(getNeighborValue(x, tempGrid, layer) * decay * -1.f);
+                neighborValue = getNeighborValue(x, decay, tempGrid, layer);
                 if (neighborValue > maxValue)
                 {
                     maxValue = neighborValue;
@@ -529,7 +590,9 @@ void propagate_solo_occupancy(MapLayer<float> &layer, float decay, float growth)
             }
 
             // apply linear interpolation 
-            tempLayer[i][j] = lerp(layer.get_value(tempGrid), maxValue, growth);
+            tempLayer[i][j] = lerp(layer.get_value(i, j), maxValue, growth);
+
+            
         }
     }
 
@@ -569,6 +632,10 @@ void propagate_dual_occupancy(MapLayer<float> &layer, float decay, float growth)
     {
         for (int j = 0; j < gridSize; ++j)
         {
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
             float maxValue = std::numeric_limits<float>::min();
             float neighborValue = 0.f;
             GridPos tempGrid;
@@ -576,7 +643,10 @@ void propagate_dual_occupancy(MapLayer<float> &layer, float decay, float growth)
             // get the max decayed influence value
             for (int x = 0; x < 8; ++x)
             {
-                neighborValue = layer.get_value(tempGrid) - exp(getNeighborValue(x, tempGrid, layer) * decay * -1.f);
+                /*float dis = 0;
+                float influenceValue = getNeighborValue(x, dis, tempGrid, layer);
+                neighborValue = layer.get_value(tempGrid) - influenceValue * exp(decay * -dis);*/
+                neighborValue = getNeighborValue(x, decay, tempGrid, layer);
                 neighborValue = abs(neighborValue);
                 if (neighborValue > maxValue)
                 {
@@ -628,6 +698,10 @@ void normalize_solo_occupancy(MapLayer<float> &layer)
     {
         for (int j = 0; j < gridSize; ++j)
         {
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
             float temp = layer.get_value(i, j);
             layer.set_value(i, j, temp / maxValue);
         }
