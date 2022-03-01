@@ -34,7 +34,31 @@ float distance_to_closest_wall(int row, int col)
     */
 
     // WRITE YOUR CODE HERE
-    // TODO: need to fix stuff
+    // need to check wall exist 
+    int gridHeight = terrain->get_map_height();
+    bool isWall = false;
+    for (int i = 0; i < gridHeight; i++)
+    {
+        for (int j = 0; j < gridHeight; j++)
+        {
+            if (terrain->is_wall(i,j)) 
+            {
+                isWall = true;
+                break;
+            }
+        }
+        if (isWall)
+        {
+            break;
+        }
+    }
+
+    // if no wall exist
+    if (!isWall)
+    {
+        return 0;
+    }
+
 
     bool findResult = false;
     float result =  std::numeric_limits<float>::max();
@@ -488,6 +512,7 @@ void analyze_agent_vision(MapLayer<float> &layer, const Agent *agent)
 float getNeighborValue(const int& index,const float & decay, GridPos currentPos, const MapLayer<float>& layer)
 {
     float cost = 0.f;
+    GridPos temp = currentPos;
     switch (index)
     {
         // left
@@ -536,7 +561,7 @@ float getNeighborValue(const int& index,const float & decay, GridPos currentPos,
         break;
     }
 
-    if (terrain->is_valid_grid_position(currentPos) && !terrain->is_wall(currentPos))
+    if (terrain->is_valid_grid_position(currentPos) && !terrain->is_wall(currentPos) && canEliminate(currentPos, temp))
     {
         //return layer.get_value(currentPos);
         return layer.get_value(currentPos) * exp(-1.f * cost * decay);
@@ -637,6 +662,7 @@ void propagate_dual_occupancy(MapLayer<float> &layer, float decay, float growth)
                 continue;
             }
             float maxValue = std::numeric_limits<float>::min();
+            float Abs, maxAbs;
             float neighborValue = 0.f;
             GridPos tempGrid;
             tempGrid.row = i, tempGrid.col = j;
@@ -647,15 +673,16 @@ void propagate_dual_occupancy(MapLayer<float> &layer, float decay, float growth)
                 float influenceValue = getNeighborValue(x, dis, tempGrid, layer);
                 neighborValue = layer.get_value(tempGrid) - influenceValue * exp(decay * -dis);*/
                 neighborValue = getNeighborValue(x, decay, tempGrid, layer);
-                neighborValue = abs(neighborValue);
-                if (neighborValue > maxValue)
+                Abs = abs(neighborValue);
+                if (Abs > maxValue)
                 {
-                    maxValue = neighborValue;
+                    maxValue = Abs;
+                    maxAbs = neighborValue;
                 }
             }
 
             // apply linear interpolation 
-            tempLayer[i][j] = lerp(layer.get_value(tempGrid), maxValue, growth);
+            tempLayer[i][j] = lerp(layer.get_value(tempGrid), maxAbs, growth);
         }
     }
 
@@ -698,7 +725,7 @@ void normalize_solo_occupancy(MapLayer<float> &layer)
     {
         for (int j = 0; j < gridSize; ++j)
         {
-            if (terrain->is_wall(i, j))
+            if (terrain->is_wall(i, j) || layer.get_value(i, j) < 0.f)
             {
                 continue;
             }
@@ -745,6 +772,10 @@ void normalize_dual_occupancy(MapLayer<float> &layer)
     {
         for (int j = 0; j < gridSize; ++j)
         {
+            if (terrain->is_wall(i, j))
+            {
+                continue;
+            }
             float temp = layer.get_value(i, j);
             if (temp > 0.f)
             {
@@ -814,7 +845,7 @@ void enemy_field_of_view(MapLayer<float> &layer, float fovAngle, float closeDist
             float dotP = forwardVec2.Dot(targetVec2);
 
             // if within view angle
-            if (dotP < viewCos)
+            if (dotP > viewCos)
             {
                 if (is_clear_path(i, j, gridPos.row, gridPos.col))
                 {
