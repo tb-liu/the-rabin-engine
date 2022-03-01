@@ -417,9 +417,13 @@ void analyze_visible_to_cell(MapLayer<float> &layer, int row, int col)
     {
         for (int j = 0; j < gridSize; ++j)
         {
-            if (terrain->is_wall(i, j) || (i == row && j == col))
+            if (terrain->is_wall(i, j))
             {
                 continue;
+            }
+            if (i == row && j == col)
+            {
+                layer.set_value(i, j, 1.f);
             }
             if (is_clear_path(row, col, i, j))
             {
